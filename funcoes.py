@@ -53,19 +53,20 @@ def preenche_tabuleiro(tabuleiro, num_cores):
 
 
 def cadeias_horizontais(tabuleiro):
-    cadeia_horizontal = []
+    """Dá as coordenada da cadeia horizontal, sendo: [[linha, coluna_inicial, linha, coluna_final]]"""
     for i in range(len(tabuleiro)):
+        cadeia_horizontal = []
         comeco = ""
         fim = ""
         cont = 1
         cordenadas = []
         for j in range(len(tabuleiro)):
             if j < len(tabuleiro) - 1:
-                if tabuleiro[i][j] == tabuleiro[i][j+1]:
+                if tabuleiro[i][j] == tabuleiro[i][j + 1]:
                     cont += 1
                     if cont >= 3:
                         comeco = ((j + 2) - cont)
-                        fim = (j+1)
+                        fim = (j + 1)
                         cordenadas.append(i)
                         cordenadas.append(comeco)
                         cordenadas.append(i)
@@ -74,48 +75,55 @@ def cadeias_horizontais(tabuleiro):
                         cadeia_horizontal.append(cordenadas)
                 elif cont == 2:
                     cont = 1
-    return cadeia_horizontal
+        if len(cadeia_horizontal) > 0:
+            elimina_cadeia(tabuleiro, cadeia_horizontal)
+    return tabuleiro
 
 
 def cadeias_verticais(tabuleiro):
-    cadeia = []
+    """Dá as coordenadas da cadeia vertical, sendo: [[linha_inicial, coluna, linha_final, coluna]]"""
     for j in range(len(tabuleiro)):
+        cadeia_vertical = []
         comeco = ""
         fim = ""
         cont = 1
         cordenadas = []
         for i in range(len(tabuleiro)):
             if i < len(tabuleiro) - 1:
-                if tabuleiro[i][j] == tabuleiro[i+1][j]:
+                if tabuleiro[i][j] == tabuleiro[i + 1][j]:
                     cont += 1
                     if cont >= 3:
                         comeco = ((i + 2) - cont)
-                        fim = (i+1)
+                        fim = (i + 1)
                         cordenadas.append(comeco)
                         cordenadas.append(j)
                         cordenadas.append(fim)
                         cordenadas.append(j)
                         cont = 1
-                        cadeia.append(cordenadas)
+                        cadeia_vertical.append(cordenadas)
                 elif cont == 2:
                     cont = 1
-    return cadeia
+        if len(cadeia_vertical) > 0:
+            elimina_cadeia(tabuleiro, cadeia_vertical)
+    return tabuleiro
 
 
 def elimina_cadeia(tabuleiro, cadeia):
-    linha = 0
+    linha_inicial = 0
+    linha_final = 0
     coluna_inicial = 0
     coluna_final = 0
 
     for i in range(len(cadeia)):
         for j in range(len(cadeia[i])):
-            linha = cadeia[i][0]
+            linha_inicial = cadeia[i][0]
+            linha_final = cadeia[i][2]
             coluna_inicial = cadeia[i][1]
             coluna_final = cadeia[i][3]
 
     for i in range(len(tabuleiro)):
         for j in range(len(tabuleiro)):
-            if i == linha and j >= coluna_inicial and j <= coluna_final:
-                tabuleiro[i][j] = ""
+            if i >= linha_inicial and j >= coluna_inicial and i <= linha_final and j <= coluna_final:
+                tabuleiro[i][j] = " "
 
     return tabuleiro

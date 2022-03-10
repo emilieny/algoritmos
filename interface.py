@@ -28,6 +28,9 @@ def main():
     tabuleiro = constroi_tabuleiro(tamanho_tabuleiro, tamanho_tabuleiro)
     preenche_tabuleiro(tabuleiro, num_cores)
     imprime_tabuleiro(tabuleiro, tamanho_tabuleiro)
+    cadeia1 = cadeias_horizontais(tabuleiro)
+    cadeia2 = cadeias_verticais(tabuleiro)
+    imprime_tabuleiro(tabuleiro, tamanho_tabuleiro)
 
 
 main()
