@@ -1,0 +1,7 @@
+NADA = " "
+NIVEL_FACIL = "     0  1  2      "
+LINHA_NIVEL_FACIL = "  +-----------+  "
+NIVEL_MEDIO = "     0  1  2  3  4     "
+LINHA_NIVEL_MEDIO = "  +-----------------+  "
+NIVEL_DIFICIL = "     0  1  2  3  4  5  6  7   "
+LINHA_NIVEL_DIFICIL = "  +--------------------------+  "
