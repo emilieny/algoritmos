@@ -28,9 +28,14 @@ def main():
     tabuleiro = constroi_tabuleiro(tamanho_tabuleiro, tamanho_tabuleiro)
     preenche_tabuleiro(tabuleiro, num_cores)
     imprime_tabuleiro(tabuleiro, tamanho_tabuleiro)
-    cadeia1 = cadeias_horizontais(tabuleiro)
-    cadeia2 = cadeias_verticais(tabuleiro)
+    num_gemas = eliminar(tabuleiro)
+    while num_gemas > 0:
+        deslocar(tabuleiro)
+        preenche_tabuleiro(tabuleiro, num_cores)
+        num_gemas = eliminar(tabuleiro)
+
     imprime_tabuleiro(tabuleiro, tamanho_tabuleiro)
+
 
 
 main()

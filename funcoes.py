@@ -77,7 +77,6 @@ def cadeias_horizontais(tabuleiro):
                     cont = 1
         if len(cadeia_horizontal) > 0:
             elimina_cadeia(tabuleiro, cadeia_horizontal)
-    return tabuleiro
 
 
 def cadeias_verticais(tabuleiro):
@@ -105,7 +104,6 @@ def cadeias_verticais(tabuleiro):
                     cont = 1
         if len(cadeia_vertical) > 0:
             elimina_cadeia(tabuleiro, cadeia_vertical)
-    return tabuleiro
 
 
 def elimina_cadeia(tabuleiro, cadeia):
@@ -126,4 +124,37 @@ def elimina_cadeia(tabuleiro, cadeia):
             if i >= linha_inicial and j >= coluna_inicial and i <= linha_final and j <= coluna_final:
                 tabuleiro[i][j] = " "
 
-    return tabuleiro
+
+def eliminar(tabuleiro):
+    cadeias_horizontais(tabuleiro)
+    cadeias_verticais(tabuleiro)
+    num_gemas = 0
+    for i in range(len(tabuleiro)):
+        for j in range(len(tabuleiro)):
+            if tabuleiro[i][j] == " ":
+                num_gemas += 1
+    return num_gemas
+
+
+def deslocar_coluna(tabuleiro, i):
+    for coluna in range(len(tabuleiro)+1):
+        if coluna == i:
+            cont = 0
+            for linha in range(len(tabuleiro)):
+                if linha > 0 and tabuleiro[linha][coluna] == " " and tabuleiro[linha-1][coluna] != " ":
+                    cont += 1
+
+            while cont > 0:
+                for linha in range(len(tabuleiro)):
+                    if linha > 0 and tabuleiro[linha][coluna] == " " and tabuleiro[linha-1][coluna] != " ":
+                        tabuleiro[linha][coluna] = tabuleiro[linha-1][coluna]
+                        tabuleiro[linha - 1][coluna] = " "
+                cont -= 1
+    return
+
+
+def deslocar(tabuleiro):
+    for linha in range(len(tabuleiro)):
+        for coluna in range(len(tabuleiro)):
+            if tabuleiro[linha][coluna] == " ":
+                deslocar_coluna(tabuleiro, coluna)
