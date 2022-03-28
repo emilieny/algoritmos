@@ -38,10 +38,13 @@ def main():
             print("Nível inválido!!")
 
     while True:
-        num_cores = int(input("Digite o número de cores (entre 3 e 7): "))
-        if num_cores > 2 and num_cores <= 7:
-            break
-        else:
+        try:
+            num_cores = int(input("Digite o número de cores (entre 3 e 7): "))
+            if num_cores > 2 and num_cores <= 7:
+                break
+            else:
+                print("\033[31mDigite um número de cores válido!\033[m")
+        except ValueError:
             print("\033[31mDigite um número de cores válido!\033[m")
 
     # cria o tabuleiro com as configurações iniciais
