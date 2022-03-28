@@ -1,3 +1,6 @@
+"""Contém todas as funções que são chamadas no módulo "interface",
+                   e fazem o jogo funcionar."""
+
 from constantes import *
 import random
 
@@ -52,8 +55,100 @@ def preenche_tabuleiro(tabuleiro, num_cores):
                 tabuleiro[i][j] = gemas[gema]
 
 
+def permutacao_valida(l1, c1, l2, c2, tabuleiro):
+    """Verifica se a permutação feita pelo jogador é válida."""
+    # verifica os tabuleiros de tamanhos 5x5 e 8x8
+    if len(tabuleiro) >= 5:
+        # Verifica permutações válidas na mesma linha
+        for i in range(min(l1, l2), len(tabuleiro)):
+            for j in range(min(c1, c2), len(tabuleiro)):
+                if i == l1 and j == c1 or i == l2 and j == c2:
+                    if j < len(tabuleiro) - 1:
+                        # Verifica elementos iguais pra direita
+                        if tabuleiro[i][j] == tabuleiro[i][j + 1]:
+                            if tabuleiro[i][j + 1] == tabuleiro[i][j + 2]:  # 3 elementos seguidos?
+                                # Então é uma permutação válida
+                                return True
+                    if j > 1:
+                        # Verifica elementos iguais pra esquerda
+                        if tabuleiro[i][j] == tabuleiro[i][j - 1]:
+                            if tabuleiro[i][j - 1] == tabuleiro[i][j - 2]:  # 3 elementos seguidos?
+                                # Então é uma permutação válida
+                                return True
+
+        # Verifica permutações válidas na mesma coluna
+        for j in range(min(l1, l2), len(tabuleiro)):
+            for i in range(min(c1, c2), len(tabuleiro)):
+                if j == l1 and i == c1 or j == l2 and i == c2:
+                    if j < len(tabuleiro) - 1:
+                        # Verifica elementos iguais pra baixo
+                        if tabuleiro[j][i] == tabuleiro[j + 1][i]:
+                            if tabuleiro[j + 1][i] == tabuleiro[j + 2][i]:  # 3 elementos seguidos?
+                                # Então é uma permutação válida
+                                return True
+                    if j >= 1:
+                        # Verifica elementos iguais pra cima
+                        if tabuleiro[j][i] == tabuleiro[j - 1][i]:
+                            if tabuleiro[j - 1][i] == tabuleiro[j - 2][i]:  # 3 elementos seguidos?
+                                # Então é uma permutação válida
+                                # Permutação válida
+                                return True
+        return False
+    # verifica o tabuleiro de tamanho 3x3
+    else:
+        for i in range(min(l1, l2), len(tabuleiro)):
+            for j in range(min(c1, c2), len(tabuleiro)):
+                if i == l1 and j == c1 or i == l2 and j == c2:
+                    if j < 2:
+                        # Verifica elementos iguais pra direita
+                        if tabuleiro[i][0] == tabuleiro[i][1]:
+                            if tabuleiro[i][1] == tabuleiro[i][2]:  # 3 elementos seguidos?
+                                # Então é uma permutação válida
+                                return True
+                    if j == 2:
+                        # Verifica elementos iguais pra esquerda
+                        if tabuleiro[i][j] == tabuleiro[i][1]:
+                            if tabuleiro[i][1] == tabuleiro[i][0]:  # 3 elementos seguidos?
+                                # Então é uma permutação válida
+                                return True
+
+        for j in range(min(l1, l2), len(tabuleiro)):
+            for i in range(min(c1, c2), len(tabuleiro)):
+                if j == l1 and i == c1 or j == l2 and i == c2:
+                    if j < 2:
+                        # Verifica elementos iguais pra baixo
+                        if tabuleiro[j][i] == tabuleiro[1][i]:
+                            if tabuleiro[1][i] == tabuleiro[2][i]:  # 3 elementos seguidos?
+                                # Então é uma permutação válida
+                                return True
+                    if j == 2:
+                        # Verifica elementos iguais pra cima
+                        if tabuleiro[j][i] == tabuleiro[1][i]:
+                            if tabuleiro[1][i] == tabuleiro[0][i]:  # 3 elementos seguidos?
+                                # Então é uma permutação válida
+                                # Permutação válida
+                                return True
+        return False
+
+
+def trocar(l1, c1, l2, c2, tabuleiro):
+    """ Troca a gema da linha 1, coluna 1 pela gema da coluna 2, coluna 2, que é dada pelo jogador. """
+    anterior = tabuleiro[l1][c1]
+    tabuleiro[l1][c1] = tabuleiro[l2][c2]
+    tabuleiro[l2][c2] = anterior
+
+    valida = permutacao_valida(l1, c1, l2, c2, tabuleiro)
+    if valida:
+        return True, tabuleiro
+
+    anterior = tabuleiro[l1][c1]
+    tabuleiro[l1][c1] = anterior
+    tabuleiro[l2][c2] = tabuleiro[l2][c2]
+    return False, tabuleiro
+
+
 def cadeias_horizontais(tabuleiro):
-    """Dá as coordenada da cadeia horizontal, sendo: [[linha, coluna_inicial, linha, coluna_final]]"""
+    """Dá as coordenadas da cadeia horizontal, sendo: [[linha, coluna_inicial, linha, coluna_final]]"""
     for i in range(len(tabuleiro)):
         cadeia_horizontal = []
         comeco = ""
@@ -107,6 +202,7 @@ def cadeias_verticais(tabuleiro):
 
 
 def elimina_cadeia(tabuleiro, cadeia):
+    """ Substitui por uma string vazia (" ") as gemas compreendidas numa cadeia."""
     linha_inicial = 0
     linha_final = 0
     coluna_inicial = 0
@@ -126,6 +222,7 @@ def elimina_cadeia(tabuleiro, cadeia):
 
 
 def eliminar(tabuleiro):
+    """ Elimina as cadeias substituindo gemas por " " e retorna o número de gemas destruídas. """
     cadeias_horizontais(tabuleiro)
     cadeias_verticais(tabuleiro)
     num_gemas = 0
@@ -137,6 +234,8 @@ def eliminar(tabuleiro):
 
 
 def deslocar_coluna(tabuleiro, i):
+    """ Desloca coluna por coluna, os elementos que estão acima de espaços vazios (" ") para esses espaços vazios,
+               e onde esses elemntos deslocados estavam, ficam vazios (" ")."""
     for coluna in range(len(tabuleiro)+1):
         if coluna == i:
             cont = 0
@@ -154,7 +253,118 @@ def deslocar_coluna(tabuleiro, i):
 
 
 def deslocar(tabuleiro):
+    """Desloca de uma vez só todas as colunas e linhas que estão acima de espaços vazios."""
     for linha in range(len(tabuleiro)):
         for coluna in range(len(tabuleiro)):
             if tabuleiro[linha][coluna] == " ":
                 deslocar_coluna(tabuleiro, coluna)
+
+
+def obter_dica(tabuleiro):
+    """Verfica as possibilidades de permutação, seja na horizontal, seja na vertical."""
+    linha = -1
+    coluna = -1
+
+    # Verifica os tabuleiros de tamanho 5x5 e 8x8
+    if len(tabuleiro) >= 5:
+        for i in range(len(tabuleiro)):
+            for j in range(len(tabuleiro)):
+                if j < len(tabuleiro) - 3:  # Verifica pra direita
+                    if tabuleiro[i][j] == tabuleiro[i][j + 1]:
+                        if tabuleiro[i][j + 1] == tabuleiro[i][j + 3]:
+                            linha = i
+                            coluna = j + 2
+
+                if j > 3:  # Verifica pra esquerda
+                    if tabuleiro[i][j] == tabuleiro[i][j - 1]:
+                        if tabuleiro[i][j - 1] == tabuleiro[i][j - 3]:
+                            linha = i
+                            coluna = j - 2
+
+
+        for j in range(len(tabuleiro)):
+            for i in range(len(tabuleiro)):
+                if i < len(tabuleiro) - 3:  # Verifica pra baixo
+                    if tabuleiro[i][j] == tabuleiro[i + 1][j]:
+                        if tabuleiro[i + 1][j] == tabuleiro[i + 3][j]:
+                            linha = j
+                            coluna = i + 2
+
+                if i > 3:  # Verifica pra cima
+                    if tabuleiro[i][j] == tabuleiro[i - 1][j]:
+                        if tabuleiro[i - 1][j] == tabuleiro[i - 3][j]:
+                            linha = j
+                            coluna = i - 2
+        return linha, coluna
+
+    # Verifica o tabuleiro de tamanho 3x3
+    else:
+        for i in range(len(tabuleiro)):
+            for j in range(len(tabuleiro)): # verifica pra baixo
+                if i < 2:
+                    if tabuleiro[i][0] == tabuleiro[i][1] or tabuleiro[i][1] == tabuleiro[i][2]:
+                        if tabuleiro[i+1][2] == tabuleiro[i][0] or tabuleiro[i+1][0] == tabuleiro[i][1]:
+                            linha = i
+                            coluna = 2
+
+                if i == 2: # verefica pra cima
+                    if tabuleiro[i][0] == tabuleiro[i][1] or tabuleiro[i][1] == tabuleiro[i][2]:
+                        if tabuleiro[i - 1][2] == tabuleiro[i][0] or tabuleiro[i - 1][0] == tabuleiro[i][1]:
+                            linha = i
+                            coluna = 2
+
+        for i in range(len(tabuleiro)):
+            for j in range(len(tabuleiro)): # verifica pra direita
+                if j < 2:
+                    if tabuleiro[0][j] == tabuleiro[1][j] or tabuleiro[1][j] == tabuleiro[2][j]:
+                        if tabuleiro[2][j+1] == tabuleiro[0][j] or tabuleiro[0][j+1] == tabuleiro[1][j]:
+                            linha = j
+                            coluna = 1
+
+                if j == 2: # verefica pra esquerda
+                    if tabuleiro[0][j] == tabuleiro[1][j] or tabuleiro[1][j] == tabuleiro[2][j]:
+                        if tabuleiro[2][j - 1] == tabuleiro[0][j] or tabuleiro[0][j - 1] == tabuleiro[1][j]:
+                            linha = j
+                            coluna = 1
+
+
+        # verifica possibilidades de gemas do meio
+        for i in range(len(tabuleiro)):
+            for j in range(len(tabuleiro)): # verifica pra baixo
+                if i < 2:
+                    if tabuleiro[i][0] == tabuleiro[i][2]:
+                        if tabuleiro[i+1][1] == tabuleiro[i][0]:
+                            linha = i
+                            coluna = 1
+
+                if i == 2: # verefica pra cima
+                    if tabuleiro[i][0] == tabuleiro[i][2]:
+                        if tabuleiro[i-1][1] == tabuleiro[i][0]:
+                            linha = i
+                            coluna = 1
+
+        for i in range(len(tabuleiro)):
+            for j in range(len(tabuleiro)): # verifica pra direita
+                if j < 2:
+                    if tabuleiro[0][j] == tabuleiro[2][j]:
+                        if tabuleiro[1][j+1] == tabuleiro[0][j]:
+                            linha = 1
+                            coluna = j
+
+                if j == 2: # verefica pra esquerda
+                    if tabuleiro[0][j] == tabuleiro[2][j]:
+                        if tabuleiro[1][j-1] == tabuleiro[0][j]:
+                            linha = 1
+                            coluna = j
+
+        return linha, coluna
+
+
+def exitem_movimentos_validos(tabuleiro):
+    """Verifica se existem movimentos válidos há sejem feitos."""
+    existe = True
+    permutacao = obter_dica(tabuleiro)
+    if permutacao[0] == -1 and permutacao[1] == -1:
+        existe = False
+
+    return existe
